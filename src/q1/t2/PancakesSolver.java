@@ -1,7 +1,6 @@
 package q1.t2;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,11 +11,6 @@ import util.IOUtil;
 import util.Solver;
 
 public final class PancakesSolver implements Solver<PancakesInput> {
-	@Override
-	public String solve(PancakesInput input) {
-		return solve1(input);
-	}
-
 	private int lowerToCost(int num, int lowerTo) {
 		if (num <= lowerTo) {
 			return 0;
@@ -37,10 +31,10 @@ public final class PancakesSolver implements Solver<PancakesInput> {
 		return b.build();
 	}
 
-	public String solve1(PancakesInput input) {
+	@Override
+	public String solve(PancakesInput input) {
 		List<Integer> pancakes = Arrays.stream(input.getPancakes()).boxed().sorted(Comparator.reverseOrder())
 				.collect(Collectors.toList());
-//		System.out.println(pancakes);
 		int specialMinutes = 0;
 		while (true) {
 			int max = pancakes.get(0);
@@ -63,53 +57,10 @@ public final class PancakesSolver implements Solver<PancakesInput> {
 				break;
 			}
 
-//			System.out.println("lowering to " + bestLowerTo);
 			final int bestLowerToF = bestLowerTo;
 			pancakes = pancakes.stream().flatMap(num -> lowerTo(num, bestLowerToF)).sorted(Comparator.reverseOrder())
 					.collect(Collectors.toList());
-//			System.out.println(pancakes);
 			specialMinutes += bestTotalCost;
-		}
-		return "" + (pancakes.get(0) + specialMinutes);
-	}
-
-	public String solve2(PancakesInput input) {
-		List<Integer> pancakes = Arrays.stream(input.getPancakes()).boxed().sorted(Comparator.reverseOrder())
-				.collect(Collectors.toList());
-//		System.out.println(pancakes);
-		int specialMinutes = 0;
-		while (true) {
-			int max = pancakes.get(0);
-			List<Integer> rest = pancakes.subList(1, pancakes.size());
-			int bestSaved = 0;
-			int bestDiv = 0;
-			for (int div = 2; div < max - 1; div++) {
-				// calculate what we save
-				int maxDivved = max / div + ((max % div) > 0 ? 1 : 0);
-				int maxOfTheRest = rest.stream().max(Comparator.naturalOrder()).orElse(0);
-				// lower max to max of the rest
-				int saved1 = max - Math.max(maxDivved, maxOfTheRest); // - (int) rest.stream().filter(i -> i >
-																		// maxDivved).count();
-				// lower max to maxDiv by lowering all the rest to maxDiv
-				int saved2 = max - maxDivved - rest.stream().filter(i -> i > maxDivved)
-						.mapToInt(i -> i / maxDivved + ((i % maxDivved) > 0 ? 1 : 0) - 1).sum();
-				int saved = Math.max(saved1, saved2) - (div - 1);
-				if (saved > bestSaved) {
-					bestSaved = saved;
-					bestDiv = div;
-				}
-			}
-			if (bestDiv == 0) {
-				break;
-			}
-			pancakes.remove(0);
-			int res = max / bestDiv;
-			int rem = max % bestDiv;
-			IntStream.range(0, rem).forEach(i -> pancakes.add(res + 1));
-			IntStream.range(0, bestDiv - rem).forEach(i -> pancakes.add(res));
-			Collections.sort(pancakes, Comparator.reverseOrder());
-//			System.out.println(pancakes);
-			specialMinutes += (bestDiv - 1);
 		}
 		return "" + (pancakes.get(0) + specialMinutes);
 	}
