@@ -6,7 +6,7 @@ import util.Solver;
 public final class OvationSolver implements Solver<OvationInput> {
 
 	public static void main(String[] args) {
-		IOUtil.doIO(OvationInput.PARSER, new OvationSolver(), 1);
+		IOUtil.doIO(OvationInput.PARSER, new OvationSolver());
 	}
 
 	@Override
