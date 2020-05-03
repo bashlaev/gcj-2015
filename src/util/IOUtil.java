@@ -11,7 +11,8 @@ public final class IOUtil {
 			for (int i = 1; i <= t; i++) {
 				T caseInput = parser.parse(in);
 				String output = solver.solve(caseInput);
-				System.out.println("Case #" + i + ": " + output);
+				boolean startsWithNewLine = output.startsWith("\r\n");
+				System.out.println("Case #" + i + ":" + (startsWithNewLine ? "" : " ") + output);
 			}
 		}
 	}
